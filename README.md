@@ -1,10 +1,12 @@
 # Workflow Agents Workshop
 
+In this Workshop, we will explore practical architectural patterns for building and deploying scalable, production-grade agents on top of Render. You will leave with a deployable Workflow for multi-step agent code reviews.
+
 | Pattern | Folder | Substrate | Render primitives |
 | --- | --- | --- | --- |
 | 1. Naive agent | [`packages/naive-agent`](packages/naive-agent) | one web service, in-process | Web Service + Postgres |
 | 2. Worker agents | [`packages/worker-agents`](packages/worker-agents) | web + background worker + queue | + Background Worker + Valkey |
-| 3. Workflow agents | [`packages/workflow-agents`](packages/workflow-agents) | Render Workflows | + Workflows (`task()`) |
+| 3. Workflow agents | [`packages/workflow-agents`](packages/workflow-agents) | Render Workflows | Workflows (`task()`) |
 
 ## The agent
 
@@ -27,8 +29,8 @@ prepareDiff → filterDiff → [ security ‖ performance ‖ ux? ] → judge
 All three patterns serve the same telemetry viewer ([`shared/ui`](shared/ui)) — a
 reviews table with per-agent findings — backed by [`shared/db`](shared/db).
 `shared/db` uses an in-memory backend when `DATABASE_URL` is unset and Postgres
-when it is set, so Patterns 1 and 3 run with no database. Pattern 2 runs web and
-worker as separate processes, so it requires Postgres plus Valkey/Redis.
+when it is set, so Patterns 1 and 3 can run with no database. Pattern 2 runs a Web Service and
+Background Worker as separate processes, so it requires Postgres plus Valkey/Redis.
 
 ## Layout
 
@@ -65,8 +67,3 @@ No API key needed — the agent falls back to a mock model so the pipeline runs
 offline. Set `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for real reviews. Per-pattern
 setup is in each package's README and [`docs/00-setup.md`](docs/00-setup.md).
 
-## Workshop materials
-
-This repo is the basis for a two-session workshop. The proposal (objectives,
-session outlines, rationale) is in [`index.md`](index.md); the facilitator
-run-of-show and talking points are in [`facilitator/`](facilitator).
